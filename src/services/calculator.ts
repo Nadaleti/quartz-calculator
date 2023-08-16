@@ -1,18 +1,6 @@
+import type { Bonus } from "../types/Bonus";
+import { CalculationResult } from "../types/CalculationResult";
 import type { Mining, MiningUnit } from "../types/Mining";
-
-type Bonus = "double" | "2xdouble" | "plus-8" | "plus-12";
-
-interface CrystalResult extends MiningUnit {
-  doubled: boolean;
-  matchBonusCondition: boolean;
-}
-
-type CalculationResult = {
-  bonus: Bonus;
-  // points: number | undefined; // check best moment to sum
-  eligible: boolean;
-  crystals: CrystalResult[];
-};
 
 const _orderByPoints = (mining: Mining): Mining =>
   mining.sort((u1: MiningUnit, u2: MiningUnit) => {
@@ -58,7 +46,7 @@ const _calculateDoubleBonus = (
     !lessValuedBonusMatching ||
     mappedCrystals[minRequiredIndex].quantity === 0
   ) {
-    return { bonus, eligible: false, crystals: mappedCrystals };
+    return new CalculationResult(bonus, false, mappedCrystals);
   }
 
   // Checks the matching crystal
@@ -72,7 +60,7 @@ const _calculateDoubleBonus = (
   filtered[0].doubled = true;
   if (bonus === "2xdouble") filtered[1].doubled = true;
 
-  return { bonus, eligible: true, crystals: mappedCrystals };
+  return new CalculationResult(bonus, true, mappedCrystals);
 };
 
 const _calculatePlusBonus = (
@@ -91,18 +79,20 @@ const _calculatePlusBonus = (
   let minRequiredIndex = 4;
   if (bonus === "plus-12") minRequiredIndex = 5;
 
-  return {
+  return new CalculationResult(
     bonus,
-    eligible: mappedCrystals[minRequiredIndex].quantity > 0,
-    crystals: mappedCrystals,
-  };
+    mappedCrystals[minRequiredIndex].quantity > 0,
+    mappedCrystals,
+  );
 };
 
-const calculate = (mining: Mining) => {
-  console.log("double", _calculateDoubleBonus("double", mining));
-  console.log("2xdouble", _calculateDoubleBonus("2xdouble", mining));
-  console.log("plus-8", _calculatePlusBonus("plus-8", mining));
-  console.log("plus-12", _calculatePlusBonus("plus-12", mining));
-};
+// Returns all bonus calculations ordered by points
+const calculate = (mining: Mining): CalculationResult[] =>   
+  [
+    _calculateDoubleBonus("double", mining),
+    _calculateDoubleBonus("2xdouble", mining),
+    _calculatePlusBonus("plus-8", mining),
+    _calculatePlusBonus("plus-12", mining)
+  ].sort((result1, result2) => result2.points - result1.points)
 
 export default { calculate };
