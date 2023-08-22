@@ -9,6 +9,7 @@ export type CrystalType =
 export type CrystalProps = {
   readonly max: number;
   readonly value: number;
+  readonly color: string;
 };
 
 export type Crystal = {
