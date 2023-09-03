@@ -1,9 +1,15 @@
 <script lang="ts">
+  import { Route, Router } from 'svelte-routing';
   import Sell from "./lib/pages/Sell.svelte";
+  import Result from './lib/pages/Result.svelte';
 </script>
 
 <main>
-  <Sell />
+  <Router>
+    <Route path="/" component={Sell} />
+    <Route path="/venda" component={Sell} />
+    <Route path="/resultado" component={Result} />
+  </Router>
 </main>
 
 <style lang="scss">

@@ -1,24 +1,37 @@
 <script lang="ts">
+  import { navigate } from "svelte-routing";
+  import type { Mining } from "../../types/Mining";
+  import type { CalculationResult } from "../../types/CalculationResult";
+  
   import crystals from "../../consts/crystals";
   import calculator from "../../services/calculator";
-  import type { CalculationResult } from "../../types/CalculationResult";
-  import type { Mining } from "../../types/Mining";
+  import { default as resultStore } from "../../stores/result.store";
+
   import Button from "../Button.svelte";
   import Gem from "../Gem.svelte";
   import NumberInput from "../NumberInput.svelte";
   import Page from "../Page.svelte";
 
-  let results: CalculationResult[] = [];
-  let mining: Mining = crystals.map((crystal) => ({ ...crystal, quantity: 0 }));
+  const mining: Mining = crystals.map((crystal) => ({ ...crystal, quantity: 0 }));
 
   const calculatePoints = () => {
-    results = calculator.calculate([...mining]);
+    if (mining.every(m => m.quantity == 0)) {
+      return;
+    }
+
+    const results: CalculationResult[] = calculator.calculate([...mining]);
+    resultStore.set(results);
+    navigate("/resultado");
   };
 </script>
 
+<svelte:head>
+  <title>Quartz - Venda</title>
+</svelte:head>
+
 <Page>
   <h1 slot="header">VENDA</h1>
-  <form slot="body" on:submit|preventDefault={calculatePoints}>
+  <form id="calc-form" slot="body" on:submit|preventDefault={calculatePoints}>
     {#each mining as unit}
       <div class="crystal-input">
         <div class="gem-wrapper">
@@ -36,7 +49,14 @@
     {/each}
   </form>
   <div slot="footer" class="submit-wrapper">
-    <Button crystal="safira">CALCULAR</Button>
+    <Button
+      id="submit-calc-btn"
+      crystal="safira"
+      type="submit"
+      form="calc-form"
+    >
+      CALCULAR
+    </Button>
   </div>
 </Page>
 
@@ -71,12 +91,5 @@
     width: 100%;
     padding-top: 0.5rem;
     box-sizing: border-box;
-
-    button {
-      height: 100%;
-      width: 100%;
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
   }
 </style>

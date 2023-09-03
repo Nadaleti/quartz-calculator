@@ -1,18 +1,25 @@
-<div>
+<div class="page-container">
   <slot name="header" />
-  <slot name="body" />
+  <div class="scrollable-body">
+    <slot name="body" />
+  </div>
   <slot name="footer" />
 </div>
 
 <style lang="scss">
-  div {
+  .page-container {
     display: grid;
-    grid-template-rows: 0.1fr 1fr 0.1fr;
+    grid-template-rows: 50px 1fr 65px;
     row-gap: 1rem;
     align-items: center;
     min-height: 100vh;
     min-width: 100vw;
     padding: 1rem;
     box-sizing: border-box;
+
+    .scrollable-body {
+      max-height: calc(100vh - 4rem - 115px);
+      overflow-y: auto;
+    }
   }
 </style>
