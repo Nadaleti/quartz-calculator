@@ -5,7 +5,7 @@
 </script>
 
 <main>
-  <Router url="/quartz-calculator">
+  <Router basepath="/quartz-calculator">
     <Route path="/" component={Sell} />
     <Route path="/venda" component={Sell} />
     <Route path="/resultado" component={Result} />
