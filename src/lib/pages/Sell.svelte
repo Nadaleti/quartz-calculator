@@ -21,7 +21,7 @@
 
     const results: CalculationResult[] = calculator.calculate([...mining]);
     resultStore.set(results);
-    navigate("/resultado");
+    navigate("/quartz-calculator/resultado");
   };
 </script>
 

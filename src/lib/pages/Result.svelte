@@ -12,13 +12,13 @@
   const bonus: Bonus = greatest && greatest.eligible ? greatest.bonus : "none";
 
   if (!greatest) {
-    navigate("/venda");
+    navigate("/quartz-calculator/venda");
     location.reload();
   }
 
   const goToSell = (): void => {
     results.set([]);
-    navigate("/venda");
+    navigate("/quartz-calculator/venda");
   };
 </script>
 
